@@ -783,7 +783,7 @@ def convergence_rb_td(beta, gamma, learning_rate,N_iterations, N_runs, coeff=0.3
 
   
   
-def plot_combined_value_functions(beta, gamma, learning_rate,N_iterations, no_title=True,coeff=1):
+def plot_combined_value_functions(beta, gamma, learning_rate,N_iterations, no_title=True,coeff_list = [1,1,1],sname_add=""):
   env = RoomEnv()
   TD_agent = TD_Learner(gamma,room_combined,env,learning_rate,beta, random_policy=True)
   RB_agent = Reward_Basis_Learner(gamma,[room_r1, room_r2, room_r3],env,learning_rate,beta,[1,0,0], random_policy=True)
@@ -794,19 +794,19 @@ def plot_combined_value_functions(beta, gamma, learning_rate,N_iterations, no_ti
   vss = rb_Vss[-1,:,:]
   TD_V = Vs[-1,:]
   if no_title:
-    plot_value_function(TD_V,sname="figures/TD_room_vf.png", title="")
-    plot_value_function(vss[0,:],sname="figures/RB_room_1vf.png", title="")
-    plot_value_function(vss[1,:], sname="figures/RB_room_2vf.png", title="")
-    plot_value_function(vss[2,:], sname="figures/RB_room_3vf.png", title="")
-    comb_v = (coeff * vss[0,:]) + (coeff * vss[1,:]) + (coeff * vss[2,:])
-    plot_value_function(comb_v,sname="figures/RB_room_comb_v.png", title="")
+    plot_value_function(TD_V,sname="figures/TD_room_vf" + sname_add + ".png", title="")
+    plot_value_function(vss[0,:],sname="figures/RB_room_1vf" + sname_add + ".png", title="")
+    plot_value_function(vss[1,:], sname="figures/RB_room_2vf" + sname_add +".png", title="")
+    plot_value_function(vss[2,:], sname="figures/RB_room_3vf" + sname_add +".png", title="")
+    comb_v = (coeff_list[0] * vss[0,:]) + (coeff_list[1] * vss[1,:]) + (coeff_list[2] * vss[2,:])
+    plot_value_function(comb_v,sname="figures/RB_room_comb_v" + sname_add +".png", title="")
   else:
-    plot_value_function(TD_V,sname="figures/TD_room_vf.png", title="TD combined value function")
-    plot_value_function(vss[0,:],sname="figures/RB_room_1vf.png", title="RB Value Basis 1")
-    plot_value_function(vss[1,:], sname="figures/RB_room_2vf.png", title="RB Value Basis 2")
-    plot_value_function(vss[2,:], sname="figures/RB_room_3vf.png", title="RB Value Basis 3")
-    comb_v = (coeff* vss[0,:]) + (coeff * vss[1,:]) + (coeff * vss[2,:])
-    plot_value_function(comb_v,sname="figures/RB_room_comb_v.png", title="RB Combined Value Function")
+    plot_value_function(TD_V,sname="figures/TD_room_vf" + sname_add + ".png", title="TD combined value function")
+    plot_value_function(vss[0,:],sname="figures/RB_room_1vf" + sname_add + ".png", title="RB Value Basis 1")
+    plot_value_function(vss[1,:], sname="figures/RB_room_2vf" + sname_add + ".png", title="RB Value Basis 2")
+    plot_value_function(vss[2,:], sname="figures/RB_room_3vf" + sname_add +".png", title="RB Value Basis 3")
+    comb_v = (coeff_list[0]* vss[0,:]) + (coeff_list[1] * vss[1,:]) + (coeff_list[2] * vss[2,:])
+    plot_value_function(comb_v,sname="figures/RB_room_comb_v" + sname_add +".png", title="RB Combined Value Function")
     
   print("TD : ", TD_V.reshape(6,6))
   print("RB: ", comb_v.reshape(6,6))
@@ -934,6 +934,7 @@ if __name__ == '__main__':
   plot_successor_matrix_evolution(learning_rate, beta, gamma, 1000, 20)
   learning_rate_sweep(beta, gamma, steps_per_reversal)
   plot_combined_value_functions(beta, gamma, learning_rate, 5000,no_title=True)
+  plot_combined_value_functions(beta, gamma, learning_rate, 5000,no_title=True, coeff_list=[1,0.5,0],sname_add="_other_example" )
   convergence_rb_td(beta, gamma, learning_rate,5000,10)
   plot_reward_function(room_r1, "figures/room_r1.png")
   plot_reward_function(room_r2, "figures/room_r2.png")
@@ -941,12 +942,12 @@ if __name__ == '__main__':
   plot_reward_function(room_combined, "figures/room_rcombined.png")
   
   lrs = [0.001,0.005,0.01,0.05,0.1,0.2,0.3,0.4,0.5,0.8]
-  #lrs = [0.01,0.05,0.1,0.2,0.3,0.5,0.8]
+  lrs = [0.01,0.05,0.1,0.2,0.3,0.5,0.8]
   N_steps = 20
   learning_rate_sweep_combined_graph(lrs, beta, gamma, N_steps, N_runs = 10, run_afresh=True,line_plot=True,fignum=6)
   lr = 0.1
   steps = [50,100,150,200]
-  #steps = [2,5,10,20,30,50,100]
+  steps = [2,5,10,20,30,50,100]
   steps_per_reversal_sweep_combined_graph(lr, beta, gamma, steps,N_runs = 20,run_afresh=True, line_plot=True, fignum=1)
   room_sizes = [6,10,15,20,30,40,50,75,100]
   room_sizes_sweep_graph(learning_rate, beta,gamma,room_sizes,steps_per_reversal,N_runs=1,run_afresh=True,line_plot=True,fignum=1)
