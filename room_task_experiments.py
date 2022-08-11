@@ -543,12 +543,12 @@ def learning_rate_sweep_combined_graph(lrs, beta, gamma, steps_per_reversal, N_r
     np.save("data/lr_combined_sr_std.npy_3", sr_std)
     print("DONE!")
   else:
-    rb_rs = np.load("data/lr_combined_rb_rs.npy")#[2:7]
-    td_rs = np.load("data/lr_combined_td_rs.npy")#[2:7]
-    sr_rs = np.load("data/lr_combined_sr_rs.npy")#[2:7]
-    rb_std = np.load("data/lr_combined_rb_std.npy")#[2:7]
-    td_std = np.load("data/lr_combined_td_std.npy")#[2:7]
-    sr_std = np.load("data/lr_combined_sr_std.npy")#[2:7]
+    rb_rs = np.load("data/lr_combined_rb_rs.npy_3.npy")#[2:7]
+    td_rs = np.load("data/lr_combined_td_rs.npy_3.npy")#[2:7]
+    sr_rs = np.load("data/lr_combined_sr_rs.npy_3.npy")#[2:7]
+    rb_std = np.load("data/lr_combined_rb_std.npy_3.npy")#[2:7]
+    td_std = np.load("data/lr_combined_td_std.npy_3.npy")#[2:7]
+    sr_std = np.load("data/lr_combined_sr_std.npy_3.npy")#[2:7]
   
   # figure
   if line_plot:
@@ -572,7 +572,7 @@ def learning_rate_sweep_combined_graph(lrs, beta, gamma, steps_per_reversal, N_r
     sns.despine(left=False,top=True, right=True, bottom=False)
     plt.xticks(fontsize=22)
     plt.yticks(fontsize=22)
-    plt.savefig("figures/learning_rate_maze_combined_" + str(fignum) + ".jpg")
+    plt.savefig("figures/learning_rate_maze_combined_" + str(fignum) + ".png", format="png")
     plt.show()
   else:
     # bar chart
@@ -596,7 +596,7 @@ def learning_rate_sweep_combined_graph(lrs, beta, gamma, steps_per_reversal, N_r
     ax.legend(fontsize=25)
     sns.despine(left=False,top=True, right=True, bottom=False)
     fig.tight_layout()
-    plt.savefig("figures/learning_rate_maze_combined_bar_3.jpg", format="jpg")
+    plt.savefig("figures/learning_rate_maze_combined_bar_3.png", format="png")
     plt.show()
     
 def steps_per_reversal_sweep_combined_graph(lr, beta, gamma, steps_per_reversal, N_runs = 10, run_afresh = False,line_plot = False,fignum=0,intermediate_plots=False):
@@ -645,12 +645,12 @@ def steps_per_reversal_sweep_combined_graph(lr, beta, gamma, steps_per_reversal,
     np.save("data/steps_combined_sr_std.npy_3", sr_std)
     print("DONE!")
   else:
-    rb_rs = np.load("data/steps_combined_rb_rs.npy")#[2:7]
-    td_rs = np.load("data/steps_combined_td_rs.npy")#[2:7]
-    sr_rs = np.load("data/steps_combined_sr_rs.npy")#[2:7]
-    rb_std = np.load("data/steps_combined_rb_std.npy")#[2:7]
-    td_std = np.load("data/steps_combined_td_std.npy")#[2:7]
-    sr_std = np.load("data/steps_combined_sr_std.npy")#[2:7]
+    rb_rs = np.load("data/steps_combined_rb_rs.npy_3.npy")#[2:7]
+    td_rs = np.load("data/steps_combined_td_rs.npy_3.npy")#[2:7]
+    sr_rs = np.load("data/steps_combined_sr_rs.npy_3.npy")#[2:7]
+    rb_std = np.load("data/steps_combined_rb_std.npy_3.npy")#[2:7]
+    td_std = np.load("data/steps_combined_td_std.npy_3.npy")#[2:7]
+    sr_std = np.load("data/steps_combined_sr_std.npy_3.npy")#[2:7]
 
   if line_plot:
     xs = [i for i in range(len(steps_per_reversal))]
@@ -673,7 +673,7 @@ def steps_per_reversal_sweep_combined_graph(lr, beta, gamma, steps_per_reversal,
     sns.despine(left=False,top=True, right=True, bottom=False)
     plt.xticks(fontsize=22)
     plt.yticks(fontsize=22)
-    plt.savefig("figures/interval_steps_maze_combined_" + str(fignum) + ".jpg")
+    plt.savefig("figures/interval_steps_maze_combined_" + str(fignum) + ".png", format="png")
     plt.show()
   else:
     # bar chart
@@ -888,7 +888,7 @@ def room_sizes_sweep_graph(lr, beta, gamma, room_sizes, steps_per_reversal, N_ru
     sns.despine(left=False,top=True, right=True, bottom=False)
     plt.xticks(fontsize=22)
     plt.yticks(fontsize=22)
-    plt.savefig("figures/romm_size_maze_combined_" + str(fignum) + ".jpg")
+    plt.savefig("figures/romm_size_maze_combined_" + str(fignum) + ".png", format="png")
     plt.show()
   else:
     # bar chart
@@ -912,7 +912,7 @@ def room_sizes_sweep_graph(lr, beta, gamma, room_sizes, steps_per_reversal, N_ru
     ax.legend(fontsize=25)
     sns.despine(left=False,top=True, right=True, bottom=False)
     fig.tight_layout()
-    plt.savefig("figures/room_sizes_maze_combined_bar_3.jpg", format="jpg")
+    plt.savefig("figures/room_sizes_maze_combined_bar_3.png", format="png")
     plt.show()
     
 def verify_kappa_homeostatic():
@@ -929,27 +929,27 @@ if __name__ == '__main__':
   beta = 1
   gamma =0.9
   steps_per_reversal = 100
-  plot_N_results(50, learning_rate, beta, gamma, steps_per_reversal,results_fn = plot_results, combined_figure_flag=True, use_successor_agent=True, use_homeostatic_agent=True, save_data=True, data_sname="quadruple_combined_recolored_2_", use_standard_error=True)
-  convergence_times(learning_rate, beta, gamma, 1000,10)
-  plot_successor_matrix_evolution(learning_rate, beta, gamma, 1000, 20)
-  learning_rate_sweep(beta, gamma, steps_per_reversal)
-  plot_combined_value_functions(beta, gamma, learning_rate, 5000,no_title=True)
-  plot_combined_value_functions(beta, gamma, learning_rate, 5000,no_title=True, coeff_list=[1,0.5,0],sname_add="_other_example" )
-  convergence_rb_td(beta, gamma, learning_rate,5000,10)
-  plot_reward_function(room_r1, "figures/room_r1.png")
-  plot_reward_function(room_r2, "figures/room_r2.png")
-  plot_reward_function(room_r3, "figures/room_r3.png")
-  plot_reward_function(room_combined, "figures/room_rcombined.png")
+  #plot_N_results(50, learning_rate, beta, gamma, steps_per_reversal,results_fn = plot_results, combined_figure_flag=True, use_successor_agent=True, use_homeostatic_agent=True, save_data=True, data_sname="quadruple_combined_recolored_2_", use_standard_error=True)
+  #convergence_times(learning_rate, beta, gamma, 1000,10)
+  #plot_successor_matrix_evolution(learning_rate, beta, gamma, 1000, 20)
+  #learning_rate_sweep(beta, gamma, steps_per_reversal)
+  #plot_combined_value_functions(beta, gamma, learning_rate, 5000,no_title=True)
+  #plot_combined_value_functions(beta, gamma, learning_rate, 5000,no_title=True, coeff_list=[1,0.5,0],sname_add="_other_example" )
+  #convergence_rb_td(beta, gamma, learning_rate,5000,10)
+  #plot_reward_function(room_r1, "figures/room_r1.png")
+  #plot_reward_function(room_r2, "figures/room_r2.png")
+  #plot_reward_function(room_r3, "figures/room_r3.png")
+  #plot_reward_function(room_combined, "figures/room_rcombined.png")
   
-  lrs = [0.001,0.005,0.01,0.05,0.1,0.2,0.3,0.4,0.5,0.8]
-  lrs = [0.01,0.05,0.1,0.2,0.3,0.5,0.8]
-  N_steps = 20
-  learning_rate_sweep_combined_graph(lrs, beta, gamma, N_steps, N_runs = 10, run_afresh=True,line_plot=True,fignum=6)
+  #lrs = [0.001,0.005,0.01,0.05,0.1,0.2,0.3,0.4,0.5,0.8]
+  #lrs = [0.01,0.05,0.1,0.2,0.3,0.5,0.8]
+  #N_steps = 20
+  #learning_rate_sweep_combined_graph(lrs, beta, gamma, N_steps, N_runs = 10, run_afresh=False,line_plot=True,fignum=6)
   lr = 0.1
   steps = [50,100,150,200]
   steps = [2,5,10,20,30,50,100]
-  steps_per_reversal_sweep_combined_graph(lr, beta, gamma, steps,N_runs = 20,run_afresh=True, line_plot=True, fignum=1)
-  room_sizes = [6,10,15,20,30,40,50,75,100]
-  room_sizes_sweep_graph(learning_rate, beta,gamma,room_sizes,steps_per_reversal,N_runs=1,run_afresh=True,line_plot=True,fignum=1)
+  steps_per_reversal_sweep_combined_graph(lr, beta, gamma, steps,N_runs = 20,run_afresh=False, line_plot=True, fignum=1)
+  #room_sizes = [6,10,15,20,30,40,50,75,100]
+  #room_sizes_sweep_graph(learning_rate, beta,gamma,room_sizes,steps_per_reversal,N_runs=1,run_afresh=True,line_plot=True,fignum=1)
   
-  verify_kappa_homeostatic()
+  #verify_kappa_homeostatic()
