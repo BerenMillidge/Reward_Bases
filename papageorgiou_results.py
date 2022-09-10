@@ -665,13 +665,13 @@ def Vs_N_experiments(N_runs, N_steps=500, lr=0.1):
         V_food, V_water = train_agent_papageorgiou_exp(N_steps = N_steps, lr=lr)
         V_foods[i,:] = V_food
         V_waters[i,:] = V_water
-    #np.save("V_foods.npy", V_foods)
-    #np.save("V_waters.npy", V_waters)
+    np.save("data/PP_V_foods.npy", V_foods)
+    np.save("data/PP_V_waters.npy", V_waters)
     return V_foods, V_waters
 
 
 if __name__ == '__main__':
-
+    REGENERATE_DATA = False
     #plot_pp_1C()
     #plot_rb_1C()
     #plot_pp_2AB()
@@ -681,10 +681,13 @@ if __name__ == '__main__':
     #train_agent_papageorgiou_exp()
     #V_foods = np.load("V_foods.npy")
     #V_waters = np.load("V_waters.npy")
-    #V_foods, V_waters = Vs_N_experiments(20)
+    if REGENERATE_DATA:
+        V_foods, V_waters = Vs_N_experiments(20)
+    else:
+        V_foods = np.load("data/PP_V_foods.npy")
+        V_waters = np.load("data/PP_V_waters.npy")
     #pp_2A(V_foods, V_waters)
-    V_foods = np.load("V_foods.npy")
-    V_waters = np.load("V_waters.npy")
+
     #V_foods, V_waters = Vs_N_experiments(20)
     #PP_2C(V_foods, V_waters,average_conditions = True)
 
@@ -692,6 +695,6 @@ if __name__ == '__main__':
     #PP_2D(V_foods, V_waters)
 
     PP_4A(V_foods, V_waters, empty_plot = True,use_baseline=False)
-    #cosyne_combined_megaplot(V_foods, V_waters, empty_plot = True)
+    cosyne_combined_megaplot(V_foods, V_waters, empty_plot = True)
 
 
