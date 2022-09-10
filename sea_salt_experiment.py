@@ -57,7 +57,55 @@ def salt_r2(env, state):
 def salt_extinction_reward_fn(env, state):
   return 0
 
-def berridge_plot(learning_rate, beta, steps_per_reversal, N_agents=10, empty_plot = True, large_font=True):
+
+def plot_berridge_bar(vals, stds, labels,sname = "", clear_background = True,large_font = True, empty_plot = True,color = "blue"):
+  xs = np.arange(len(labels))
+  if not clear_background:
+    sns.set_theme(context='talk',font='sans-serif',font_scale=1.0)
+  fig, ax = plt.subplots(figsize=(12,10))
+  width = 0.7
+  plt.bar(xs, vals, width, label = labels, alpha =0.8, yerr = stds, capsize = 4, color=color)
+  #bar_td = ax.bar(xs + (width + 0.02), [TD_V_juice, TD_V_juice], width, label="Temporal Difference",alpha=0.8,yerr=[TD_STD_juice, TD_STD_juice],capsize=4)
+  #bar_rb = ax.bar(xs , [V_normal_juice, V_depleted_juice], width, label="Reward Basis",alpha=0.8,yerr=[RB_std_juice, RB_std_juice],capsize=4)
+  #bar_exp = ax.bar(xs - (width + 0.02) , [normal_juice, depleted_juice], width, label="Experiment",alpha=0.8,yerr=[normal_juice_std, depleted_juice_std],capsize=4)
+  if large_font:
+    ax.set_ylabel("Approach/Nibbles/Sniffs", fontsize=40)
+  else:
+    ax.set_ylabel("Approach/Nibbles/Sniffs", fontsize=28)
+  ax.set_xlabel("", fontsize=28)
+  if large_font:
+    ax.set_title("Responses to Juice Lever",fontsize=45)
+  else:
+    ax.set_title("Responses to Juice Lever",fontsize=30)
+  if empty_plot:
+    ax.set_ylabel("", fontsize=28)
+    ax.set_ylim(0,5)
+    ax.set_yticks([])
+    ax.set_title("")
+  ax.set_xticks(xs)
+  ax.set_xticklabels(labels)
+  if large_font:
+    ax.tick_params(axis='x', which='major', labelsize=35)
+    ax.tick_params(axis='x', which='minor', labelsize=35)
+    ax.tick_params(axis='y', which='major', labelsize=35)
+    ax.tick_params(axis='y', which='minor', labelsize=35)
+  else:
+    ax.tick_params(axis='x', which='major', labelsize=20)
+    ax.tick_params(axis='x', which='minor', labelsize=20)
+    ax.tick_params(axis='y', which='major', labelsize=20)
+    ax.tick_params(axis='y', which='minor', labelsize=20)
+  if not empty_plot:
+    ax.legend(fontsize=25)
+  sns.despine(left=False,top=True, right=True, bottom=False)
+  fig.tight_layout()
+  if empty_plot:
+    plt.savefig("figures/berridge_empty_" + sname + ".png", format="png")
+  else:
+    plt.savefig("figures/berridge_" + sname + ".png", format="png")
+  plt.show()
+
+
+def berridge_plot(learning_rate, beta, steps_per_reversal, N_agents=10, empty_plot = True, large_font=True, clear_background = True, group_by_type = False):
   env = SeaSaltExperiment()
   Vss = []
   for i in range(N_agents):
@@ -123,96 +171,109 @@ def berridge_plot(learning_rate, beta, steps_per_reversal, N_agents=10, empty_pl
   TD_STD_salt = Vs_td_std[1]
   print(TD_STD_juice)
   print(TD_STD_salt)
-  # bar chart -- 2 bar charts one for juice one for salt.
-  # juice plot
-  labels = ["Homeostasis", "Sodium Depleted"]
-  xs = np.arange(len(labels))
-  sns.set_theme(context='talk',font='sans-serif',font_scale=1.0)
-  fig, ax = plt.subplots(figsize=(12,10))
-  width = 0.2
-  bar_td = ax.bar(xs + (width + 0.02), [TD_V_juice, TD_V_juice], width, label="Temporal Difference",alpha=0.8,yerr=[TD_STD_juice, TD_STD_juice],capsize=4)
-  bar_rb = ax.bar(xs , [V_normal_juice, V_depleted_juice], width, label="Reward Basis",alpha=0.8,yerr=[RB_std_juice, RB_std_juice],capsize=4)
-  bar_exp = ax.bar(xs - (width + 0.02) , [normal_juice, depleted_juice], width, label="Experiment",alpha=0.8,yerr=[normal_juice_std, depleted_juice_std],capsize=4)
-  if large_font:
-    ax.set_ylabel("Approach/Nibbles/Sniffs", fontsize=40)
+
+
+  # rafal's other plotting idea
+  if group_by_type:
+    plot_berridge_bar([TD_V_juice, TD_V_juice, TD_V_salt, TD_V_salt],[TD_STD_juice, TD_STD_juice, TD_STD_salt, TD_STD_salt],labels=["Juice homeostasis", "Juice depleted","Salt Homeostasis","Salt Depleted"],sname="TD_bar", clear_background = clear_background,large_font = large_font,empty_plot = empty_plot,color="blue")
+    plot_berridge_bar([V_normal_juice, V_depleted_juice, V_normal_salt, V_depleted_salt],[RB_std_juice, RB_std_juice, RB_std_salt, RB_std_salt],labels=["Juice homeostasis", "Juice depleted","Salt Homeostasis","Salt Depleted"], sname="RB_bar",clear_background = clear_background,large_font = large_font, empty_plot = empty_plot,color="orange")
+    plot_berridge_bar([normal_juice, depleted_juice, normal_salt, depleted_salt],[normal_juice_std, depleted_juice_std, normal_salt_std, depleted_salt_std],labels=["Juice homeostasis", "Juice depleted","Salt Homeostasis","Salt Depleted"],sname="experiment_bar", clear_background = clear_background, large_font = large_font, empty_plot = empty_plot,color="green")
+  
   else:
-    ax.set_ylabel("Approach/Nibbles/Sniffs", fontsize=28)
-  ax.set_xlabel("", fontsize=28)
-  if large_font:
-    ax.set_title("Responses to Juice Lever",fontsize=45)
-  else:
-    ax.set_title("Responses to Juice Lever",fontsize=30)
-  if empty_plot:
-    ax.set_ylim(0,5)
-    ax.set_title("")
-  ax.set_xticks(xs)
-  ax.set_xticklabels(labels)
-  if large_font:
-    ax.tick_params(axis='x', which='major', labelsize=35)
-    ax.tick_params(axis='x', which='minor', labelsize=35)
-    ax.tick_params(axis='y', which='major', labelsize=35)
-    ax.tick_params(axis='y', which='minor', labelsize=35)
-  else:
-    ax.tick_params(axis='x', which='major', labelsize=25)
-    ax.tick_params(axis='x', which='minor', labelsize=25)
-    ax.tick_params(axis='y', which='major', labelsize=25)
-    ax.tick_params(axis='y', which='minor', labelsize=25)
-  if not empty_plot:
-    ax.legend(fontsize=25)
-  sns.despine(left=False,top=True, right=True, bottom=False)
-  fig.tight_layout()
-  if empty_plot:
-    plt.savefig("figures/berridge_juice_barchart_empty.jpg", format="jpg")
-  else:
-    plt.savefig("figures/berridge_juice_barchart.jpg", format="jpg")
-  plt.show()
-  # salt plot
-  labels = ["Homeostasis", "Sodium Depleted"]
-  xs = np.arange(len(labels))
-  sns.set_theme(context='talk',font='sans-serif',font_scale=1.0)
-  fig, ax = plt.subplots(figsize=(12,10))
-  width = 0.2
-  bar_td = ax.bar(xs + (width + 0.02) , [TD_V_salt, TD_V_salt], width, label="Temporal Difference",alpha=0.8,yerr=[TD_STD_salt, TD_STD_salt],capsize=4)
-  bar_rb = ax.bar(xs , [V_normal_salt, V_depleted_salt], width, label="Reward Basis",alpha=0.8,yerr=[RB_std_salt, RB_std_salt],capsize=4)
-  bar_exp = ax.bar(xs - (width + 0.02)  , [normal_salt, depleted_salt], width, label="Experiment",alpha=0.8,yerr=[normal_salt_std, depleted_salt_std],capsize=4)
-  if large_font:
-    ax.set_ylabel("Approach/Nibbles/Sniffs", fontsize=40)
-  else:
-    ax.set_ylabel("Approach/Nibbles/Sniffs", fontsize=28)
-  if large_font:
-    ax.set_xlabel("", fontsize=40)
-    ax.set_title("Responses to Salt Lever",fontsize=40)
-  else:
+    # bar chart -- 2 bar charts one for juice one for salt.
+    # juice plot
+    labels = ["Homeostasis", "Sodium Depleted"]
+    xs = np.arange(len(labels))
+    if not clear_background:
+      sns.set_theme(context='talk',font='sans-serif',font_scale=1.0)
+    fig, ax = plt.subplots(figsize=(12,10))
+    width = 0.2
+    bar_td = ax.bar(xs + (width + 0.02), [TD_V_juice, TD_V_juice], width, label="Temporal Difference",alpha=0.8,yerr=[TD_STD_juice, TD_STD_juice],capsize=4)
+    bar_rb = ax.bar(xs , [V_normal_juice, V_depleted_juice], width, label="Reward Basis",alpha=0.8,yerr=[RB_std_juice, RB_std_juice],capsize=4)
+    bar_exp = ax.bar(xs - (width + 0.02) , [normal_juice, depleted_juice], width, label="Experiment",alpha=0.8,yerr=[normal_juice_std, depleted_juice_std],capsize=4)
+    if large_font:
+      ax.set_ylabel("Approach/Nibbles/Sniffs", fontsize=40)
+    else:
+      ax.set_ylabel("Approach/Nibbles/Sniffs", fontsize=28)
     ax.set_xlabel("", fontsize=28)
-    ax.set_title("Responses to Salt Lever",fontsize=30)
-  if empty_plot:
-    ax.set_ylabel("", fontsize=28)
-    ax.set_ylim(0,5)
-    ax.set_yticks([])
-    ax.set_title("")
-  ax.set_xticks(xs)
-  ax.set_xticklabels(labels)
-  if large_font:
-    ax.tick_params(axis='x', which='major', labelsize=35)
-    ax.tick_params(axis='x', which='minor', labelsize=35)
-    ax.tick_params(axis='y', which='major', labelsize=35)
-    ax.tick_params(axis='y', which='minor', labelsize=35)
-  else:
-    ax.tick_params(axis='x', which='major', labelsize=25)
-    ax.tick_params(axis='x', which='minor', labelsize=25)
-    ax.tick_params(axis='y', which='major', labelsize=25)
-    ax.tick_params(axis='y', which='minor', labelsize=25)
-  if large_font:
-    ax.legend(fontsize=35, loc="upper left")
-  else:
-    ax.legend(fontsize=25)
-  sns.despine(left=False,top=True, right=True, bottom=False)
-  fig.tight_layout()
-  if empty_plot:
-    plt.savefig("figures/berridge_salt_barchart_empty.jpg", format="jpg")
-  else:
-    plt.savefig("figures/berridge_salt_barchart.jpg", format="jpg")
-  plt.show()
+    if large_font:
+      ax.set_title("Responses to Juice Lever",fontsize=45)
+    else:
+      ax.set_title("Responses to Juice Lever",fontsize=30)
+    if empty_plot:
+      ax.set_ylabel("", fontsize=28)
+      ax.set_ylim(0,5)
+      ax.set_yticks([])
+      ax.set_title("")
+    ax.set_xticks(xs)
+    ax.set_xticklabels(labels)
+    if large_font:
+      ax.tick_params(axis='x', which='major', labelsize=35)
+      ax.tick_params(axis='x', which='minor', labelsize=35)
+      ax.tick_params(axis='y', which='major', labelsize=35)
+      ax.tick_params(axis='y', which='minor', labelsize=35)
+    else:
+      ax.tick_params(axis='x', which='major', labelsize=25)
+      ax.tick_params(axis='x', which='minor', labelsize=25)
+      ax.tick_params(axis='y', which='major', labelsize=25)
+      ax.tick_params(axis='y', which='minor', labelsize=25)
+    if not empty_plot:
+      ax.legend(fontsize=25)
+    sns.despine(left=False,top=True, right=True, bottom=False)
+    fig.tight_layout()
+    if empty_plot:
+      plt.savefig("figures/berridge_juice_barchart_empty.png", format="png")
+    else:
+      plt.savefig("figures/berridge_juice_barchart.png", format="png")
+    plt.show()
+    # salt plot
+    labels = ["Homeostasis", "Sodium Depleted"]
+    xs = np.arange(len(labels))
+    if not clear_background:
+      sns.set_theme(context='talk',font='sans-serif',font_scale=1.0)
+    fig, ax = plt.subplots(figsize=(12,10))
+    width = 0.2
+    bar_td = ax.bar(xs + (width + 0.02) , [TD_V_salt, TD_V_salt], width, label="Temporal Difference",alpha=0.8,yerr=[TD_STD_salt, TD_STD_salt],capsize=4)
+    bar_rb = ax.bar(xs , [V_normal_salt, V_depleted_salt], width, label="Reward Basis",alpha=0.8,yerr=[RB_std_salt, RB_std_salt],capsize=4)
+    bar_exp = ax.bar(xs - (width + 0.02)  , [normal_salt, depleted_salt], width, label="Experiment",alpha=0.8,yerr=[normal_salt_std, depleted_salt_std],capsize=4)
+    if large_font:
+      ax.set_ylabel("Approach/Nibbles/Sniffs", fontsize=40)
+    else:
+      ax.set_ylabel("Approach/Nibbles/Sniffs", fontsize=28)
+    if large_font:
+      ax.set_xlabel("", fontsize=40)
+      ax.set_title("Responses to Salt Lever",fontsize=40)
+    else:
+      ax.set_xlabel("", fontsize=28)
+      ax.set_title("Responses to Salt Lever",fontsize=30)
+    if empty_plot:
+      ax.set_ylabel("", fontsize=28)
+      ax.set_ylim(0,5)
+      ax.set_yticks([])
+      ax.set_title("")
+    ax.set_xticks(xs)
+    ax.set_xticklabels(labels)
+    if large_font:
+      ax.tick_params(axis='x', which='major', labelsize=35)
+      ax.tick_params(axis='x', which='minor', labelsize=35)
+      ax.tick_params(axis='y', which='major', labelsize=35)
+      ax.tick_params(axis='y', which='minor', labelsize=35)
+    else:
+      ax.tick_params(axis='x', which='major', labelsize=25)
+      ax.tick_params(axis='x', which='minor', labelsize=25)
+      ax.tick_params(axis='y', which='major', labelsize=25)
+      ax.tick_params(axis='y', which='minor', labelsize=25)
+    if large_font:
+      ax.legend(fontsize=35, loc="upper left")
+    else:
+      ax.legend(fontsize=25)
+    sns.despine(left=False,top=True, right=True, bottom=False)
+    fig.tight_layout()
+    if empty_plot:
+      plt.savefig("figures/berridge_salt_barchart_empty.png", format="png")
+    else:
+      plt.savefig("figures/berridge_salt_barchart.png", format="png")
+    plt.show()
 
 def sea_salt_reversal_protocol(agent, steps_per_reversal, r1,r2,RB_learner=False, salt_extinction = False):
   if RB_learner:
@@ -432,7 +493,9 @@ if __name__ == '__main__':
   beta_random_exploration = 0.2
   gamma = 1
   steps_per_reversal = 10
+  GROUP_BY_TYPE = False # whether to plot berridge bar chart expts by type or not
   #run_sea_salt_experiment(learning_rate, beta, gamma, steps_per_reversal)
   salt_extinction = True
-  berridge_plot(learning_rate, beta, steps_per_reversal,large_font=True)
+
+  berridge_plot(learning_rate, beta, steps_per_reversal,large_font=False, group_by_type=GROUP_BY_TYPE)
   run_N_sea_salt_experiment(20, learning_rate, beta_random_exploration, gamma, steps_per_reversal,salt_extinction=salt_extinction,empty_plot = True, use_homeostatic=True)
