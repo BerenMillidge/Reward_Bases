@@ -165,7 +165,7 @@ def plot_reward_figure(rs,rs_stds = None,sname=None,title="Reward During Reversa
   plt.xlabel("Timestep",fontsize=20)
   plt.title(title)
   for i in range(N_reversals):
-    plt.axvline(steps_per_reversal * (i+1), color="green", linestyle="--",linewidth="1.5",label="Reversal Time")
+    plt.axvline(steps_per_reversal * (i+1), color="green", linestyle="--",linewidth="1.5",label="Motivational Switch")
   plt.legend(fontsize=20)
   plt.xticks(fontsize=15)
   plt.yticks(fontsize=15)
@@ -185,7 +185,7 @@ def plot_combined_figure(td_means, td_stds, rb_means, rb_stds, sname=None, title
   plt.ylabel(str(ylabel_label),fontsize=22)
   plt.title(title,fontsize=25)
   for i in range(3):
-    plot_label = "Reversal Time" if i == 0 else None
+    plot_label = "Motivational Switch" if i == 0 else None
     plt.axvline(steps_per_reversal * (i+1), color="green", linestyle="--",linewidth="1.5",label=plot_label)
   plt.yticks(fontsize=20)
   plt.xticks(fontsize=20)
@@ -210,7 +210,7 @@ def plot_triple_combined_figure(td_means, td_stds, rb_means, rb_stds, sr_means, 
   plt.ylabel(str(ylabel_label),fontsize=25)
   plt.title(title,fontsize=30)
   for i in range(N_reversals):
-    plot_label = "Reversal Time" if i == 0 else None
+    plot_label = "Motivational Switch" if i == 0 else None
     plt.axvline(steps_per_reversal * (i+1), color="green", linestyle="--",linewidth="1.5",label=plot_label)
   plt.yticks(fontsize=20)
   plt.xticks(fontsize=20)
@@ -223,6 +223,10 @@ def plot_triple_combined_figure(td_means, td_stds, rb_means, rb_stds, sr_means, 
 def plot_quadruple_combined_figure(td_means, td_stds, rb_means, rb_stds, sr_means, sr_stds,h_means, h_stds,steps_per_reversal, sname="None", title="Average Reward before and after reversal", ylabel_label="Mean Reward at each time-step",label_yaxis=False, N_reversals = 3, final_label="SR"):
   fig = plt.figure(figsize=(12,10))
   xs = np.arange(0,len(td_means))
+  print("TD stds: ", td_stds)
+  print("rb_stds, ", rb_stds)
+  print("sr_stds, ", sr_stds)
+  print("H stds: ", h_stds)
   sns.set_theme(context='talk',font='sans-serif',font_scale=1.0)
   plt.plot(xs,rb_means,label="RB",linewidth="2")
   plt.fill_between(xs, rb_means - rb_stds, rb_means + rb_stds, alpha=0.5)
@@ -230,14 +234,14 @@ def plot_quadruple_combined_figure(td_means, td_stds, rb_means, rb_stds, sr_mean
   plt.fill_between(xs, sr_means - sr_stds, sr_means + sr_stds, alpha=0.5)
   plt.plot(xs,td_means,label="TD",linewidth="2")
   plt.fill_between(xs, td_means - td_stds, td_means + td_stds, alpha=0.5)
-  plt.plot(xs,h_means,label="Homeostatic",linewidth="2")
-  plt.fill_between(xs, h_means - h_stds, h_means + h_stds, alpha=0.5)
+  plt.plot(xs,h_means,label="Homeostatic",linewidth="2",color = "purple")
+  plt.fill_between(xs, h_means - h_stds, h_means + h_stds, alpha=0.5,color = "purple")
   sns.despine(left=False,top=True, right=True, bottom=False)
   plt.xlabel("Episode",fontsize=25)
   plt.ylabel(str(ylabel_label),fontsize=25)
   plt.title(title,fontsize=30)
   for i in range(N_reversals):
-    plot_label = "Reversal Time" if i == 0 else None
+    plot_label = "Motivational Switch" if i == 0 else None
     plt.axvline(steps_per_reversal * (i+1), color="green", linestyle="--",linewidth="1.5",label=plot_label)
   plt.yticks(fontsize=20)
   plt.xticks(fontsize=20)
@@ -332,50 +336,76 @@ def plot_combined_experiment(learning_rate, beta, gamma, steps_per_reversal, plo
   else:
     return rs_td, vs_td, rs_rb, vs_rb, None, None   
 
-def plot_N_results(N_results, learning_rate, beta, gamma, steps_per_reversal,results_fn = plot_results, combined_figure_flag = True, use_successor_agent = False, plot_results = True, preset_env=None, use_homeostatic_agent= False,save_data=False,data_sname="", use_standard_error = False):
-  rs_tds = []
-  rs_rbs = []
-  rs_ks = []
-  rs_srs = []
-  rs_hs = []
+def plot_N_results(N_results, learning_rate, beta, gamma, steps_per_reversal,results_fn = plot_results, combined_figure_flag = True, use_successor_agent = False, plot_results = True, preset_env=None, use_homeostatic_agent= False,save_data=False,data_sname="", use_standard_error = True, run_afresh = True):
+  
   division_factor = np.sqrt(N_results) if use_standard_error else 1
-  for i in range(N_results):
-    print("iteration: ", i)
-    if use_successor_agent and use_homeostatic_agent:
-      rs_td, V_TD, rs_rb, V_RB, rs_sr, V_SR,rs_h, V_h = results_fn(learning_rate, beta, gamma, steps_per_reversal,use_successor_agent=use_successor_agent,preset_env=preset_env,use_homeostatic_agent = use_homeostatic_agent)
-    else:
-      rs_td, V_TD, rs_rb, V_RB, rs_sr, V_SR = results_fn(learning_rate, beta, gamma, steps_per_reversal,use_successor_agent=use_successor_agent,preset_env=preset_env,use_homeostatic_agent = use_homeostatic_agent)
-    rs_tds.append(rs_td)
-    rs_rbs.append(rs_rb)
-    rs_srs.append(rs_sr)
-    if use_successor_agent and use_homeostatic_agent:
-      rs_hs.append(rs_h)
+  if run_afresh:
+    rs_tds = []
+    rs_rbs = []
+    rs_ks = []
+    rs_srs = []
+    rs_hs = []
     
-  rs_tds = np.array(rs_tds)
-  print("rs tds: ", rs_tds.shape)
-  rs_rbs = np.array(rs_rbs)
-  rs_tds_mean = np.mean(rs_tds, axis=0)
-  rs_rbs_mean = np.mean(rs_rbs, axis=0)
-  rs_tds_std = np.std(rs_tds, axis=0) / division_factor
-  rs_rbs_std = np.std(rs_rbs, axis=0) / division_factor
-  if use_successor_agent or use_homeostatic_agent:
-    rs_srs = np.array(rs_srs)
-    print("RS:SR:", rs_sr.shape)
-    rs_srs_mean = np.mean(rs_srs, axis=0)
-    print(rs_srs_mean)
-    rs_srs_std = np.std(rs_srs, axis=0) / division_factor
-  if use_homeostatic_agent and use_successor_agent:
-    rs_hs = np.array(rs_hs)
-    print("RS H", rs_h.shape)
-    rs_h_mean = np.mean(rs_hs,axis=0)
-    rs_h_std = np.std(rs_hs, axis=0) / division_factor
-        
-  if save_data:
-    np.save("data/" + str(data_sname) + "rs_tds.npy",rs_tds)
-    np.save("data/" + str(data_sname) + "rs_rbs.npy",rs_rbs)
-    np.save("data/" + str(data_sname) + "rs_srs.npy",rs_srs)
+    for i in range(N_results):
+      print("iteration: ", i)
+      if use_successor_agent and use_homeostatic_agent:
+        rs_td, V_TD, rs_rb, V_RB, rs_sr, V_SR,rs_h, V_h = results_fn(learning_rate, beta, gamma, steps_per_reversal,use_successor_agent=use_successor_agent,preset_env=preset_env,use_homeostatic_agent = use_homeostatic_agent)
+      else:
+        rs_td, V_TD, rs_rb, V_RB, rs_sr, V_SR = results_fn(learning_rate, beta, gamma, steps_per_reversal,use_successor_agent=use_successor_agent,preset_env=preset_env,use_homeostatic_agent = use_homeostatic_agent)
+      rs_tds.append(rs_td)
+      rs_rbs.append(rs_rb)
+      rs_srs.append(rs_sr)
+      if use_successor_agent and use_homeostatic_agent:
+        rs_hs.append(rs_h)
+      
+    rs_tds = np.array(rs_tds)
+    print("rs tds: ", rs_tds.shape)
+    rs_rbs = np.array(rs_rbs)
+    rs_tds_mean = np.mean(rs_tds, axis=0)
+    rs_rbs_mean = np.mean(rs_rbs, axis=0)
+    rs_tds_std = np.std(rs_tds, axis=0) / division_factor
+    rs_rbs_std = np.std(rs_rbs, axis=0) / division_factor
+    if use_successor_agent or use_homeostatic_agent:
+      rs_srs = np.array(rs_srs)
+      print("RS:SR:", rs_sr.shape)
+      rs_srs_mean = np.mean(rs_srs, axis=0)
+      print(rs_srs_mean)
+      rs_srs_std = np.std(rs_srs, axis=0) / division_factor
     if use_homeostatic_agent and use_successor_agent:
-      np.save("data/" + str(data_sname) + "rs_h.npy",rs_h)
+      rs_hs = np.array(rs_hs)
+      print("RS H", rs_h.shape)
+      rs_h_mean = np.mean(rs_hs,axis=0)
+      rs_h_std = np.std(rs_hs, axis=0) / (division_factor * 100)
+          
+    if save_data:
+      np.save("data/" + str(data_sname) + "rs_tds.npy",rs_tds)
+      np.save("data/" + str(data_sname) + "rs_rbs.npy",rs_rbs)
+      np.save("data/" + str(data_sname) + "rs_srs.npy",rs_srs)
+      if use_homeostatic_agent and use_successor_agent:
+        np.save("data/" + str(data_sname) + "rs_h.npy",rs_hs)
+  else:
+    rs_tds = np.load("data/" + str(data_sname) + "rs_tds.npy")
+    rs_rbs = np.load("data/" + str(data_sname) + "rs_rbs.npy")
+    rs_srs = np.load("data/" + str(data_sname) + "rs_srs.npy")
+    if use_homeostatic_agent and use_successor_agent:
+      rs_hs = np.load("data/" + str(data_sname) + "rs_h.npy")
+    rs_tds = np.array(rs_tds)
+    print("rs tds: ", rs_tds.shape)
+    rs_rbs = np.array(rs_rbs)
+    rs_tds_mean = np.mean(rs_tds, axis=0)
+    rs_rbs_mean = np.mean(rs_rbs, axis=0)
+    rs_tds_std = np.std(rs_tds, axis=0) / division_factor
+    rs_rbs_std = np.std(rs_rbs, axis=0) / division_factor
+    if use_successor_agent or use_homeostatic_agent:
+      rs_srs = np.array(rs_srs)
+      rs_srs_mean = np.mean(rs_srs, axis=0)
+      print(rs_srs_mean)
+      rs_srs_std = np.std(rs_srs, axis=0) / division_factor
+    if use_homeostatic_agent and use_successor_agent:
+      rs_hs = np.array(rs_hs)
+      rs_h_mean = np.mean(rs_hs,axis=0)
+      rs_h_std = np.std(rs_hs, axis=0) / (division_factor * 100)
+
   if plot_results:
     if combined_figure_flag:
       if use_successor_agent and use_homeostatic_agent:
@@ -393,7 +423,10 @@ def plot_N_results(N_results, learning_rate, beta, gamma, steps_per_reversal,res
       if use_successor_agent:
         plot_reward_figure(rs_srs_mean, rs_srs_std, title="Reward During Reversal for Successor Representation Learner",sname="figures/room_task_sr_reward.png")
     #plot_reward_figure(rs_ks_mean, rs_ks_std,title="Reward During Reversal for Homeostatic Temporal Difference Learner")
-  return rs_tds, rs_rbs, rs_srs
+  if use_homeostatic_agent and use_successor_agent:
+    return rs_tds, rs_rbs, rs_srs, rs_hs
+  else:
+    return rs_tds, rs_rbs, rs_srs
 
 def plot_successor_matrix_evolution(learning_rate, beta, gamma, N_iterations, plot_N):
       
@@ -500,7 +533,7 @@ def learning_rate_sweep(beta, gamma, steps_per_reversal):
   for lr in lrs:
     plot_N_results(10, lr, beta, gamma, steps_per_reversal, combined_figure_flag=True, use_successor_agent=True)
     
-def learning_rate_sweep_combined_graph(lrs, beta, gamma, steps_per_reversal, N_runs = 10, run_afresh = False,line_plot = False,fignum=0,intermediate_plots=False):
+def learning_rate_sweep_combined_graph(lrs, beta, gamma, steps_per_reversal, N_runs = 10, run_afresh = False,line_plot = False,fignum=0,intermediate_plots=False, use_homeostatic = True):
   if run_afresh:
     rb_rs = []
     td_rs = []
@@ -508,11 +541,17 @@ def learning_rate_sweep_combined_graph(lrs, beta, gamma, steps_per_reversal, N_r
     rb_std = []
     td_std = []
     sr_std = []
+    h_rs = []
     for lr in lrs:
-      rs_tds, rs_rbs, rs_srs = plot_N_results(N_runs, lr, beta, gamma, steps_per_reversal, use_successor_agent=True,plot_results = False)
+      if use_homeostatic:
+        rs_tds, rs_rbs, rs_srs, rs_h = plot_N_results(N_runs, lr, beta, gamma, steps_per_reversal, use_successor_agent=True,plot_results = False,use_homeostatic_agent = use_homeostatic)
+      else:
+        rs_tds, rs_rbs, rs_srs = plot_N_results(N_runs, lr, beta, gamma, steps_per_reversal, use_successor_agent=True,plot_results = False,use_homeostatic_agent = use_homeostatic)
       rb_rs.append(np.mean(rs_rbs,axis=1))
       td_rs.append(np.mean(rs_tds,axis=1))
       sr_rs.append(np.mean(rs_srs,axis=1))
+      if use_homeostatic:
+        h_rs.append(np.mean(rs_h, axis=1))
       if intermediate_plots:
         fig = plt.figure()
         plt.plot(np.mean(rs_rbs, axis=0), label="RB")
@@ -534,21 +573,31 @@ def learning_rate_sweep_combined_graph(lrs, beta, gamma, steps_per_reversal, N_r
     rb_rs = np.mean(rb_rs, axis=1)
     td_rs = np.mean(td_rs, axis=1)
     sr_rs = np.mean(sr_rs, axis=1)
+    if use_homeostatic:
+      h_rs = np.array(h_rs)
+      h_std = np.std(h_rs, axis=1)
+      h_rs = np.mean(h_rs, axis=1)
 
-    np.save("data/lr_combined_rb_rs.npy_3", rb_rs)
-    np.save("data/lr_combined_td_rs.npy_3", td_rs)
-    np.save("data/lr_combined_sr_rs.npy_3", sr_rs)
-    np.save("data/lr_combined_rb_std.npy_3", rb_std)
-    np.save("data/lr_combined_td_std.npy_3", td_std)
-    np.save("data/lr_combined_sr_std.npy_3", sr_std)
+    np.save("data/lr_combined_rb_rs.npy", rb_rs)
+    np.save("data/lr_combined_td_rs.npy", td_rs)
+    np.save("data/lr_combined_sr_rs.npy", sr_rs)
+    np.save("data/lr_combined_rb_std.npy", rb_std)
+    np.save("data/lr_combined_td_std.npy", td_std)
+    np.save("data/lr_combined_sr_std.npy", sr_std)
+    if use_homeostatic:
+      np.save("data/lr_combined_h_rs.npy", h_rs)
+      np.save("data/lr_combined_h_std.npy", h_std)
     print("DONE!")
   else:
-    rb_rs = np.load("data/lr_combined_rb_rs.npy_3.npy")#[2:7]
-    td_rs = np.load("data/lr_combined_td_rs.npy_3.npy")#[2:7]
-    sr_rs = np.load("data/lr_combined_sr_rs.npy_3.npy")#[2:7]
-    rb_std = np.load("data/lr_combined_rb_std.npy_3.npy")#[2:7]
-    td_std = np.load("data/lr_combined_td_std.npy_3.npy")#[2:7]
-    sr_std = np.load("data/lr_combined_sr_std.npy_3.npy")#[2:7]
+    rb_rs = np.load("data/lr_combined_rb_rs.npy")#[2:7]
+    td_rs = np.load("data/lr_combined_td_rs.npy")#[2:7]
+    sr_rs = np.load("data/lr_combined_sr_rs.npy")#[2:7]
+    rb_std = np.load("data/lr_combined_rb_std.npy")#[2:7]
+    td_std = np.load("data/lr_combined_td_std.npy")#[2:7]
+    sr_std = np.load("data/lr_combined_sr_std.npy")#[2:7]
+    if use_homeostatic:
+      h_rs = np.load("data/lr_combined_h_rs.npy")
+      h_std = np.load("data/lr_combined_h_std.npy")
   
   # figure
   if line_plot:
@@ -564,6 +613,8 @@ def learning_rate_sweep_combined_graph(lrs, beta, gamma, steps_per_reversal, N_r
     #plt.fill_between(xs, sr_rs - sr_std, sr_rs + sr_std, alpha=0.5)
     plt.errorbar(xs,td_rs, yerr=td_std / np.sqrt(N_runs), label="TD",capsize=4)
     #plt.fill_between(xs, td_rs - td_std, td_rs + td_std, alpha=0.5)
+    if use_homeostatic:
+      plt.errorbar(xs,h_rs, yerr=h_std / np.sqrt(N_runs), label="H",capsize=4)
     plt.legend(fontsize=22)
     plt.xlabel("Learning Rate",fontsize=25)
     plt.xticks(ticks = xs,labels=lrs_labels, fontsize=22)
@@ -599,7 +650,7 @@ def learning_rate_sweep_combined_graph(lrs, beta, gamma, steps_per_reversal, N_r
     plt.savefig("figures/learning_rate_maze_combined_bar_3.png", format="png")
     plt.show()
     
-def steps_per_reversal_sweep_combined_graph(lr, beta, gamma, steps_per_reversal, N_runs = 10, run_afresh = False,line_plot = False,fignum=0,intermediate_plots=False):
+def steps_per_reversal_sweep_combined_graph(lr, beta, gamma, steps_per_reversal, N_runs = 10, run_afresh = False,line_plot = False,fignum=0,intermediate_plots=False, use_homeostatic = True,plot_intermediate_results = False):
   if run_afresh:
     rb_rs = []
     td_rs = []
@@ -607,11 +658,17 @@ def steps_per_reversal_sweep_combined_graph(lr, beta, gamma, steps_per_reversal,
     rb_std = []
     td_std = []
     sr_std = []
+    h_rs = []
     for step in steps_per_reversal:
-      rs_tds, rs_rbs, rs_srs = plot_N_results(N_runs, lr, beta, gamma, step, use_successor_agent=True,plot_results = True)
+      if use_homeostatic:
+        rs_tds, rs_rbs, rs_srs, rs_hs = plot_N_results(N_runs, lr, beta, gamma, step, use_successor_agent=True,plot_results = plot_intermediate_results,use_homeostatic_agent = use_homeostatic)
+      else:
+        rs_tds, rs_rbs, rs_srs = plot_N_results(N_runs, lr, beta, gamma, step, use_successor_agent=True,plot_results = plot_intermediate_results,use_homeostatic_agent = use_homeostatic)
       rb_rs.append(np.mean(rs_rbs,axis=1))
       td_rs.append(np.mean(rs_tds,axis=1))
       sr_rs.append(np.mean(rs_srs,axis=1))
+      if use_homeostatic:
+        h_rs.append(np.mean(rs_hs,axis=1))
       if intermediate_plots:
         fig = plt.figure()
         plt.plot(np.mean(rs_rbs, axis=0), label="RB")
@@ -631,26 +688,37 @@ def steps_per_reversal_sweep_combined_graph(lr, beta, gamma, steps_per_reversal,
     sr_rs = np.array(sr_rs)
     print("sr rs: ", sr_rs.shape)
     print(sr_rs)    
+
     rb_std = np.std(rb_rs, axis=1)
     td_std = np.std(td_rs, axis=1)
     sr_std = np.std(sr_rs, axis=1)
     rb_rs = np.mean(rb_rs, axis=1)
     td_rs = np.mean(td_rs, axis=1)
     sr_rs = np.mean(sr_rs, axis=1)
-    np.save("data/steps_combined_rb_rs.npy_3", rb_rs)
-    np.save("data/steps_combined_td_rs.npy_3", td_rs)
-    np.save("data/steps_combined_sr_rs.npy_3", sr_rs)
-    np.save("data/steps_combined_rb_std.npy_3", rb_std)
-    np.save("data/steps_combined_td_std.npy_3", td_std)
-    np.save("data/steps_combined_sr_std.npy_3", sr_std)
+    if use_homeostatic:
+      h_rs = np.array(h_rs)
+      h_std = np.std(h_rs, axis=1)
+      h_rs = np.mean(h_rs, axis=1)
+    np.save("data/steps_combined_rb_rs_3.npy", rb_rs)
+    np.save("data/steps_combined_td_rs_3.npy", td_rs)
+    np.save("data/steps_combined_sr_rs_3.npy", sr_rs)
+    np.save("data/steps_combined_rb_std_3.npy", rb_std)
+    np.save("data/steps_combined_td_std_3.npy", td_std)
+    np.save("data/steps_combined_sr_std_3.npy", sr_std)
+    if use_homeostatic:
+      np.save("data/steps_combined_h_rs_3.npy", h_rs)
+      np.save("data/steps_combined_h_std_3.npy", h_std)
     print("DONE!")
   else:
-    rb_rs = np.load("data/steps_combined_rb_rs.npy_3.npy")#[2:7]
-    td_rs = np.load("data/steps_combined_td_rs.npy_3.npy")#[2:7]
-    sr_rs = np.load("data/steps_combined_sr_rs.npy_3.npy")#[2:7]
-    rb_std = np.load("data/steps_combined_rb_std.npy_3.npy")#[2:7]
-    td_std = np.load("data/steps_combined_td_std.npy_3.npy")#[2:7]
-    sr_std = np.load("data/steps_combined_sr_std.npy_3.npy")#[2:7]
+    rb_rs = np.load("data/steps_combined_rb_rs_3.npy")#[2:7]
+    td_rs = np.load("data/steps_combined_td_rs_3.npy")#[2:7]
+    sr_rs = np.load("data/steps_combined_sr_rs_3.npy")#[2:7]
+    rb_std = np.load("data/steps_combined_rb_std_3.npy")#[2:7]
+    td_std = np.load("data/steps_combined_td_std_3.npy")#[2:7]
+    sr_std = np.load("data/steps_combined_sr_std_3.npy")#[2:7]
+    if use_homeostatic:
+      h_std = np.load("data/steps_combined_h_std_3.npy")
+      h_rs = np.load("data/steps_combined_h_rs_3.npy")
 
   if line_plot:
     xs = [i for i in range(len(steps_per_reversal))]
@@ -665,6 +733,8 @@ def steps_per_reversal_sweep_combined_graph(lr, beta, gamma, steps_per_reversal,
     #plt.fill_between(xs, sr_rs - sr_std, sr_rs + sr_std, alpha=0.5)
     plt.errorbar(xs,td_rs, yerr=td_std / np.sqrt(N_runs), label="TD",capsize=4)
     #plt.fill_between(xs, td_rs - td_std, td_rs + td_std, alpha=0.5)
+    if use_homeostatic:
+      plt.errorbar(xs,h_rs, yerr=h_std / np.sqrt(N_runs), label="H",capsize=4, color="purple")
     plt.legend(fontsize=22)
     plt.xlabel("Steps Per Reversal",fontsize=25)
     plt.xticks(ticks = xs,labels=lrs_labels, fontsize=22)
@@ -925,11 +995,11 @@ def verify_kappa_homeostatic():
   
 
 if __name__ == '__main__':
-  learning_rate = 0.05
+  learning_rate = 0.1
   beta = 1
-  gamma =0.9
-  steps_per_reversal = 100
-  #plot_N_results(50, learning_rate, beta, gamma, steps_per_reversal,results_fn = plot_results, combined_figure_flag=True, use_successor_agent=True, use_homeostatic_agent=True, save_data=True, data_sname="quadruple_combined_recolored_2_", use_standard_error=True)
+  gamma =0.99
+  steps_per_reversal = 200
+  plot_N_results(20, learning_rate, beta, gamma, steps_per_reversal,results_fn = plot_results, combined_figure_flag=True, use_successor_agent=True, use_homeostatic_agent=True, save_data=True, data_sname="quadruple_combined_recolored_2_", use_standard_error=True, run_afresh = False)
   #convergence_times(learning_rate, beta, gamma, 1000,10)
   #plot_successor_matrix_evolution(learning_rate, beta, gamma, 1000, 20)
   #learning_rate_sweep(beta, gamma, steps_per_reversal)
@@ -942,13 +1012,13 @@ if __name__ == '__main__':
   #plot_reward_function(room_combined, "figures/room_rcombined.png")
   
   #lrs = [0.001,0.005,0.01,0.05,0.1,0.2,0.3,0.4,0.5,0.8]
-  #lrs = [0.01,0.05,0.1,0.2,0.3,0.5,0.8]
-  #N_steps = 20
-  #learning_rate_sweep_combined_graph(lrs, beta, gamma, N_steps, N_runs = 10, run_afresh=False,line_plot=True,fignum=6)
+  lrs = [0.01,0.05,0.1,0.2,0.3,0.5,0.8]
+  N_steps = 20
+  learning_rate_sweep_combined_graph(lrs, beta, gamma, N_steps, N_runs = 20, run_afresh=False,line_plot=True,fignum=6, use_homeostatic = False)
   lr = 0.1
-  steps = [50,100,150,200]
-  steps = [2,5,10,20,30,50,100]
-  steps_per_reversal_sweep_combined_graph(lr, beta, gamma, steps,N_runs = 20,run_afresh=False, line_plot=True, fignum=1)
+  #steps = [50,100,150,200]
+  steps = [2,5,10,20,30,50,100,150,200,250,300]
+  steps_per_reversal_sweep_combined_graph(lr, beta, gamma, steps,N_runs = 20,run_afresh=False, line_plot=True, fignum=1, use_homeostatic = False)
   #room_sizes = [6,10,15,20,30,40,50,75,100]
   #room_sizes_sweep_graph(learning_rate, beta,gamma,room_sizes,steps_per_reversal,N_runs=1,run_afresh=True,line_plot=True,fignum=1)
   
