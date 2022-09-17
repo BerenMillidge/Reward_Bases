@@ -4,6 +4,7 @@ from learners import *
 import matplotlib.pyplot as plt
 import seaborn as sns
 from copy import deepcopy
+import os
 
 
 def room_r1(env, position,print_det=False,simulated=False, neg_reward = -1, pos_reward = 5):
@@ -995,6 +996,8 @@ def verify_kappa_homeostatic():
   
 
 if __name__ == '__main__':
+  if not os.path.exists("figures/"):
+      os.makedirs("figures/")
   learning_rate = 0.1
   beta = 1
   gamma =0.99

@@ -488,6 +488,8 @@ def run_N_sea_salt_experiment(N_runs, learning_rate, beta, gamma, steps_per_reve
 
 
 if __name__ == '__main__':
+  if not os.path.exists("figures/"):
+    os.makedirs("figures/")
   learning_rate = 0.1
   beta = 1
   beta_random_exploration = 0.2
