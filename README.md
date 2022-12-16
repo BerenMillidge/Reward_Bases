@@ -41,11 +41,13 @@ to produce:
 
 Run 
 ```bash
-python fig2.py
+python papageorgiou_results.py
 ``` 
 to produce:
 
-![](figures/food_juice_scatterplot_reward_type_subjective_value.png)
+![](figures/cosyne_megaplot_3_empty.jpg)
+
+![](figures/proper_PP_4A_4_empty_no_baseline.jpg)
 
 Code for experiments and figures in "Reward Bases: Instanteous Reward Revaluation with Temporal Difference Learning". Paper can be found here: https://www.biorxiv.org/content/biorxiv/early/2022/04/14/2022.04.14.488361.full.pdf
 
