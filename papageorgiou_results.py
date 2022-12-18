@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.special import softmax
 
-matplotlib.rcParams.update({'errorbar.capsize': 3})
+# matplotlib.rcParams.update({'errorbar.capsize': 3})
+sns.set_theme('talk', font_scale=1.2)
 
 
 def plot_pp_1C():
@@ -16,24 +17,28 @@ def plot_pp_1C():
     sucrose_means = [0.9, 0.1]
     x = np.arange(len(labels))
     width = 0.35
-    fig, ax = plt.subplots(figsize=(12, 10))
+    fig, ax = plt.subplots()
     bar1 = ax.bar(x - width/2, food_means, width, label='Food')
     bar2 = ax.bar(x + width/2, sucrose_means, width, label='Sucrose')
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
-    ax.set_ylabel('Relative Dopamine Level', fontsize=25)
-    ax.set_title('Average Dopamine Levels for MORE received', fontsize=25)
+    ax.set_ylabel('Relative Dopamine Level',
+                  # fontsize=25
+                  )
+    ax.set_title('Average Dopamine Levels for MORE received',
+                 # fontsize=25
+                 )
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
     ax.tick_params(axis='x', which='major', labelsize=20)
     ax.tick_params(axis='x', which='minor', labelsize=10)
     ax.tick_params(axis='y', which='major', labelsize=13)
     ax.tick_params(axis='y', which='minor', labelsize=10)
-    ax.legend(fontsize=22)
-    sns.despine(left=False, top=True, right=True, bottom=False)
-    fig.tight_layout()
+    # ax.legend(fontsize=22)
+    # sns.despine(left=False, top=True, right=True, bottom=False)
+    # fig.tight_layout()
     plt.savefig("PP_1C", format="pdf")
-    plt.show()
+    # plt.show(block=False)
 
 
 def plot_rb_1C():
@@ -58,23 +63,27 @@ def plot_rb_1C():
     sucrose_means = [sucrose_valued_MORE, sucrose_devalued_MORE]
     x = np.arange(len(labels))
     width = 0.35
-    fig, ax = plt.subplots(figsize=(12, 10))
+    fig, ax = plt.subplots()
     bar1 = ax.bar(x - width/2, food_means, width, label='Food')
     bar2 = ax.bar(x + width/2, sucrose_means, width, label='Sucrose')
 
-    ax.set_ylabel('Relative Dopamine Level', fontsize=25)
-    ax.set_title('Dopamine Levels for MORE received', fontsize=25)
+    ax.set_ylabel('Relative Dopamine Level',
+                  # fontsize=25
+                  )
+    ax.set_title('Dopamine Levels for MORE received',
+                 # fontsize=25
+                 )
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
     ax.tick_params(axis='x', which='major', labelsize=20)
     ax.tick_params(axis='x', which='minor', labelsize=10)
     ax.tick_params(axis='y', which='major', labelsize=13)
     ax.tick_params(axis='y', which='minor', labelsize=10)
-    ax.legend(fontsize=22)
-    sns.despine(left=False, top=True, right=True, bottom=False)
-    fig.tight_layout()
+    # ax.legend(fontsize=22)
+    # sns.despine(left=False, top=True, right=True, bottom=False)
+    # fig.tight_layout()
     plt.savefig("RB_1C", format="pdf")
-    plt.show()
+    # plt.show(block=False)
 
 
 def plot_pp_1D():
@@ -84,25 +93,29 @@ def plot_pp_1D():
     sucrose_means = [0.4, 0.3]
     x = np.arange(len(labels))
     width = 0.35
-    fig, ax = plt.subplots(figsize=(12, 10))
+    fig, ax = plt.subplots()
     bar1 = ax.bar(x - width/2, food_means, width, label='Food')
     bar2 = ax.bar(x + width/2, sucrose_means, width, label='Sucrose')
 
     # Add some text for labels, title and custom x-axis tick labels, etc.
-    ax.set_ylabel('Relative Dopamine Level', fontsize=25)
-    ax.set_title('Dopamine levels for SWITCH vs STAY', fontsize=25)
+    ax.set_ylabel('Relative Dopamine Level',
+                  # fontsize=25
+                  )
+    ax.set_title('Dopamine levels for SWITCH vs STAY',
+                 # fontsize=25
+                 )
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
     ax.legend()
-    ax.tick_params(axis='x', which='major', labelsize=20)
-    ax.tick_params(axis='x', which='minor', labelsize=10)
-    ax.tick_params(axis='y', which='major', labelsize=13)
-    ax.tick_params(axis='y', which='minor', labelsize=10)
-    ax.legend(fontsize=22)
-    sns.despine(left=False, top=True, right=True, bottom=False)
-    fig.tight_layout()
+    # ax.tick_params(axis='x', which='major', labelsize=20)
+    # ax.tick_params(axis='x', which='minor', labelsize=10)
+    # ax.tick_params(axis='y', which='major', labelsize=13)
+    # ax.tick_params(axis='y', which='minor', labelsize=10)
+    # ax.legend(fontsize=22)
+    # sns.despine(left=False, top=True, right=True, bottom=False)
+    # fig.tight_layout()
     plt.savefig("PP_1D", format="pdf")
-    plt.show()
+    # plt.show(block=False)
 
 
 def plot_rb_1D():
@@ -131,27 +144,39 @@ def plot_rb_1D():
     sucrose_means = [da_sucrose_switch, da_sucrose_expected]
     x = np.arange(len(labels))
     width = 0.35
-    fig, ax = plt.subplots(figsize=(12, 10))
+    fig, ax = plt.subplots()
     bar1 = ax.bar(x - width/2, food_means, width, label='Food')
     bar2 = ax.bar(x + width/2, sucrose_means, width, label='Sucrose')
 
     plt.axhline(baseline, color="grey", linestyle="--",
                 linewidth="1.5", label="Baseline Dopamine")
 
-    ax.set_ylabel('Dopamine Level', fontsize=25)
-    ax.set_title('Dopamine Levels for SWITCH vs STAY', fontsize=25)
+    ax.set_ylabel('Dopamine Level',
+                  # fontsize=25
+                  )
+    ax.set_title('Dopamine Levels for SWITCH vs STAY',
+                 # fontsize=25
+                 )
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
     ax.legend()
-    ax.tick_params(axis='x', which='major', labelsize=20)
-    ax.tick_params(axis='x', which='minor', labelsize=10)
-    ax.tick_params(axis='y', which='major', labelsize=13)
-    ax.tick_params(axis='y', which='minor', labelsize=10)
-    ax.legend(fontsize=22)
-    sns.despine(left=False, top=True, right=True, bottom=False)
-    fig.tight_layout()
+    # ax.tick_params(axis='x', which='major',
+    # labelsize=20
+    # )
+    # ax.tick_params(axis='x', which='minor',
+    # labelsize=10
+    # )
+    # ax.tick_params(axis='y', which='major',
+    # labelsize=13
+    # )
+    # ax.tick_params(axis='y', which='minor',
+    # labelsize=10
+    # )
+    # ax.legend(fontsize=22)
+    # sns.despine(left=False, top=True, right=True, bottom=False)
+    # fig.tight_layout()
     plt.savefig("RB_1D", format="pdf")
-    plt.show()
+    # plt.show(block=False)
 
 
 def plot_pp_2AB():
@@ -161,25 +186,29 @@ def plot_pp_2AB():
     sucrose_means = [0.9, 0.4]
     x = np.arange(len(labels))
     width = 0.35
-    fig, ax = plt.subplots(figsize=(12, 10))
+    fig, ax = plt.subplots()
     bar1 = ax.bar(x - width/2, food_means, width, label='Food')
     bar2 = ax.bar(x + width/2, sucrose_means, width, label='Sucrose')
 
-    ax.set_ylabel('Dopamine Level', fontsize=25)
+    ax.set_ylabel('Dopamine Level',
+                  # fontsize=25
+                  )
     ax.set_title(
-        'Dopamine Levels for Valued/Devalued at Cue Onset', fontsize=25)
+        'Dopamine Levels for Valued/Devalued at Cue Onset',
+        # fontsize=25
+    )
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
     ax.legend()
-    ax.tick_params(axis='x', which='major', labelsize=20)
-    ax.tick_params(axis='x', which='minor', labelsize=10)
-    ax.tick_params(axis='y', which='major', labelsize=13)
-    ax.tick_params(axis='y', which='minor', labelsize=10)
-    ax.legend(fontsize=22)
-    sns.despine(left=False, top=True, right=True, bottom=False)
-    fig.tight_layout()
+    # ax.tick_params(axis='x', which='major', labelsize=20)
+    # ax.tick_params(axis='x', which='minor', labelsize=10)
+    # ax.tick_params(axis='y', which='major', labelsize=13)
+    # ax.tick_params(axis='y', which='minor', labelsize=10)
+    # ax.legend(fontsize=22)
+    # sns.despine(left=False, top=True, right=True, bottom=False)
+    # fig.tight_layout()
     plt.savefig("PP_2AB", format="pdf")
-    plt.show()
+    # plt.show(block=False)
 
 
 def plot_rb_2AB():
@@ -209,28 +238,32 @@ def plot_rb_2AB():
     sucrose_means = [sucrose_received_valued, sucrose_received_devalued]
     x = np.arange(len(labels))
     width = 0.35
-    fig, ax = plt.subplots(figsize=(12, 10))
+    fig, ax = plt.subplots()
     bar1 = ax.bar(x - width/2, food_means, width, label='Food')
     bar2 = ax.bar(x + width/2, sucrose_means, width, label='Sucrose')
 
     plt.axhline(baseline, color="grey", linestyle="--",
                 linewidth="1.5", label="Baseline Dopamine")
 
-    ax.set_ylabel('Dopamine Level', fontsize=25)
+    ax.set_ylabel('Dopamine Level',
+                  # fontsize=25
+                  )
     ax.set_title(
-        'Dopamine Levels for Valued/Devalued at Cue Onset', fontsize=25)
+        'Dopamine Levels for Valued/Devalued at Cue Onset',
+        # fontsize=25
+    )
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
     ax.legend()
-    ax.tick_params(axis='x', which='major', labelsize=20)
-    ax.tick_params(axis='x', which='minor', labelsize=10)
-    ax.tick_params(axis='y', which='major', labelsize=13)
-    ax.tick_params(axis='y', which='minor', labelsize=10)
-    ax.legend(fontsize=22)
-    sns.despine(left=False, top=True, right=True, bottom=False)
-    fig.tight_layout()
+    # ax.tick_params(axis='x', which='major', labelsize=20)
+    # ax.tick_params(axis='x', which='minor', labelsize=10)
+    # ax.tick_params(axis='y', which='major', labelsize=13)
+    # ax.tick_params(axis='y', which='minor', labelsize=10)
+    # ax.legend(fontsize=22)
+    # sns.despine(left=False, top=True, right=True, bottom=False)
+    # fig.tight_layout()
     plt.savefig("RB_2AB", format="pdf")
-    plt.show()
+    # plt.show(block=False)
 
 
 def train_agent_papageorgiou_exp(N_steps=500, lr=0.1):
@@ -324,29 +357,33 @@ def pp_2A(V_foods, V_waters):
     labels = ["Food (Valued)", "Sucrose (Devalued)"]
     PP_means = [PP_food, PP_water]
     sim_means = [mean_ds_food, mean_ds_water]
-    sns.set_theme(context='talk', font='sans-serif', font_scale=1.0)
+    # sns.set_theme(context='talk', font='sans-serif', font_scale=1.0)
     x = np.arange(len(labels))
     width = 0.2
-    fig, ax = plt.subplots(figsize=(12, 10))
+    fig, ax = plt.subplots()
     bar1 = ax.bar(x - width/1.5, PP_means, width,
-                  label='Experiment', alpha=0.5)
+                  label='Experiment')
     bar2 = ax.bar(x + width/1.5, sim_means, width,
                   yerr=[std_ds_food, std_ds_water], label='Simulation')
 
-    ax.set_ylabel('Relative Dopamine (DA) Level', fontsize=28)
-    ax.set_title('Dopamine for Valued/Devalued at Cue Onset', fontsize=30)
+    ax.set_ylabel('Relative Dopamine (DA) Level',
+                  # fontsize=28
+                  )
+    ax.set_title('Dopamine for Valued/Devalued at Cue Onset',
+                 # fontsize=30
+                 )
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
     ax.legend()
-    ax.tick_params(axis='x', which='major', labelsize=25)
-    ax.tick_params(axis='x', which='minor', labelsize=25)
-    ax.tick_params(axis='y', which='major', labelsize=25)
-    ax.tick_params(axis='y', which='minor', labelsize=25)
-    ax.legend(fontsize=25)
-    sns.despine(left=False, top=True, right=True, bottom=False)
-    fig.tight_layout()
+    # ax.tick_params(axis='x', which='major', labelsize=25)
+    # ax.tick_params(axis='x', which='minor', labelsize=25)
+    # ax.tick_params(axis='y', which='major', labelsize=25)
+    # ax.tick_params(axis='y', which='minor', labelsize=25)
+    # ax.legend(fontsize=25)
+    # sns.despine(left=False, top=True, right=True, bottom=False)
+    # fig.tight_layout()
     plt.savefig("figures/proper_PP_2AB_2.pdf", format="pdf")
-    plt.show()
+    # plt.show(block=False)
 
 
 def PP_2C(V_foods, V_waters, average_conditions=False, return_data=False, input_baselining=True):
@@ -442,33 +479,37 @@ def PP_2C(V_foods, V_waters, average_conditions=False, return_data=False, input_
     if return_data:
         return PP_means, sim_means, sim_stds
 
-    sns.set_theme(context='talk', font='sans-serif', font_scale=1.0)
+    # sns.set_theme(context='talk', font='sans-serif', font_scale=1.0)
     x = np.arange(len(labels))
     width = 0.2
-    fig, ax = plt.subplots(figsize=(12, 10))
+    fig, ax = plt.subplots()
     bar1 = ax.bar(x - width/1.5, PP_means, width,
-                  label='Experiment', alpha=0.5)
+                  label='Experiment')
     bar2 = ax.bar(x + width/1.5, sim_means, width,
                   yerr=sim_stds, label='Simulation')
 
-    ax.set_ylabel('Relative Dopamine (DA) Level', fontsize=28)
-    ax.set_title('Dopamine for Valued/Devalued when MORE', fontsize=30)
+    ax.set_ylabel('Relative Dopamine (DA) Level',
+                  # fontsize=28
+                  )
+    ax.set_title('Dopamine for Valued/Devalued when MORE',
+                 # fontsize=30
+                 )
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
     ax.legend()
-    ax.tick_params(axis='x', which='major', labelsize=25)
-    ax.tick_params(axis='x', which='minor', labelsize=25)
-    plt.xticks(rotation=10)
-    ax.tick_params(axis='y', which='major', labelsize=25)
-    ax.tick_params(axis='y', which='minor', labelsize=25)
-    ax.legend(fontsize=25)
-    sns.despine(left=False, top=True, right=True, bottom=False)
-    fig.tight_layout()
+    # ax.tick_params(axis='x', which='major', labelsize=25)
+    # ax.tick_params(axis='x', which='minor', labelsize=25)
+    # plt.xticks(rotation=10)
+    # ax.tick_params(axis='y', which='major', labelsize=25)
+    # ax.tick_params(axis='y', which='minor', labelsize=25)
+    # ax.legend(fontsize=25)
+    # sns.despine(left=False, top=True, right=True, bottom=False)
+    # fig.tight_layout()
     if average_conditions:
         plt.savefig("figures/proper_PP_2C_averaged_2.pdf")
     else:
         plt.savefig("figures/proper_PP_2C_2_2.pdf", format="pdf")
-    plt.show()
+    # plt.show(block=False)
 
 
 def PP_2D(V_foods, V_waters, return_data=False, input_baselineing=True):
@@ -552,29 +593,33 @@ def PP_2D(V_foods, V_waters, return_data=False, input_baselineing=True):
     if return_data:
         return PP_means, sim_means, sim_stds
 
-    sns.set_theme(context='talk', font='sans-serif', font_scale=1.0)
+    # sns.set_theme(context='talk', font='sans-serif', font_scale=1.0)
     x = np.arange(len(labels))
     width = 0.2
-    fig, ax = plt.subplots(figsize=(12, 10))
+    fig, ax = plt.subplots()
     bar1 = ax.bar(x - width/1.5, PP_means, width,
-                  label='Experiment', alpha=0.5)
+                  label='Experiment')
     bar2 = ax.bar(x + width/1.5, sim_means, width,
                   yerr=sim_stds, label='Simulation')
 
-    ax.set_ylabel('Relative Dopamine (DA) Level', fontsize=28)
-    ax.set_title('Dopamine after Reward Onset Comparison', fontsize=30)
+    ax.set_ylabel('Relative Dopamine (DA) Level',
+                  # fontsize=28
+                  )
+    ax.set_title('Dopamine after Reward Onset Comparison',
+                 # fontsize=30
+                 )
     ax.set_xticks(x)
     ax.set_xticklabels(labels)
-    ax.tick_params(axis='x', which='major', labelsize=25)
-    ax.tick_params(axis='x', which='minor', labelsize=25)
+    # ax.tick_params(axis='x', which='major', labelsize=25)
+    # ax.tick_params(axis='x', which='minor', labelsize=25)
     plt.xticks(rotation=10)
-    ax.tick_params(axis='y', which='major', labelsize=25)
-    ax.tick_params(axis='y', which='minor', labelsize=25)
-    ax.legend(fontsize=24)
-    sns.despine(left=False, top=True, right=True, bottom=False)
-    fig.tight_layout()
+    # ax.tick_params(axis='y', which='major', labelsize=25)
+    # ax.tick_params(axis='y', which='minor', labelsize=25)
+    # ax.legend(fontsize=24)
+    # sns.despine(left=False, top=True, right=True, bottom=False)
+    # fig.tight_layout()
     plt.savefig("figures/proper_PP_2D_4.pdf", format="pdf")
-    plt.show()
+    # plt.show(block=False)
 
 
 def cosyne_combined_megaplot(V_foods, V_waters, empty_plot=False):
@@ -591,35 +636,40 @@ def cosyne_combined_megaplot(V_foods, V_waters, empty_plot=False):
     sim_stds = [SWITCH_sim_stds[2], SWITCH_sim_stds[3], MORE_sim_stds[0],
                 MORE_sim_stds[1], SWITCH_sim_stds[0], SWITCH_sim_stds[1]]
 
-    if not empty_plot:
-        sns.set_theme(context='talk', font='sans-serif', font_scale=1.0)
+    # if not empty_plot:
+    #     sns.set_theme(context='talk', font='sans-serif', font_scale=1.0)
     x = np.arange(len(labels))
-    width = 0.2
-    fig, ax = plt.subplots(figsize=(15, 10))
+    width = 0.3
+    fig, ax = plt.subplots()
     bar1 = ax.bar(x - width/1.5, PP_means, width,
-                  label='Experiment', alpha=0.5)
+                  label='Experiment')
     bar2 = ax.bar(x + width/1.5, sim_means, width,
                   yerr=sim_stds, label='Simulation')
     if not empty_plot:
-        ax.set_ylabel('Relative Dopamine', fontsize=45)
-        ax.set_title('Response to Outcome', fontsize=55)
+        ax.set_ylabel('Relative Dopamine',
+                      # fontsize=45
+                      )
+        ax.set_title('Response to Outcome',
+                     # fontsize=55
+                     )
         ax.set_xticks(x)
         ax.set_xticklabels(labels)
-        ax.tick_params(axis='x', which='major', labelsize=35)
-        ax.tick_params(axis='x', which='minor', labelsize=35)
-        plt.xticks(rotation=15)
-        ax.tick_params(axis='y', which='major', labelsize=45)
-        ax.tick_params(axis='y', which='minor', labelsize=45)
+        # ax.tick_params(axis='x', which='major', labelsize=35)
+        # ax.tick_params(axis='x', which='minor', labelsize=35)
+        # plt.xticks(rotation=15)
+        # ax.tick_params(axis='y', which='major', labelsize=45)
+        # ax.tick_params(axis='y', which='minor', labelsize=45)
     else:
         plt.xticks([])
         plt.yticks([])
         plt.xlabel("")
         plt.ylabel("")
-    ax.legend(fontsize=50)
-    sns.despine(left=False, top=True, right=True, bottom=False)
-    plt.tight_layout()
+    # ax.legend(fontsize=50)
+    # sns.despine(left=False, top=True, right=True, bottom=False)
+    # plt.tight_layout()
     plt.savefig("figures/cosyne_megaplot_3_empty.jpg", format="jpg")
-    plt.show()
+    plt.savefig("figures/cosyne_megaplot_3_empty.pdf", format="pdf")
+    # plt.show(block=False)
 
 
 def PP_4A(V_foods, V_waters, empty_plot=False, use_baseline=False):
@@ -681,13 +731,14 @@ def PP_4A(V_foods, V_waters, empty_plot=False, use_baseline=False):
         labels = ["Valued", "Devalued"]
         PP_means = [PP_food, PP_water]
         sim_means = [mean_ds_food, mean_ds_water]
-    if not empty_plot:
-        sns.set_theme(context='talk', font='sans-serif', font_scale=1.0)
+    # if not empty_plot:
+    #     sns.set_theme(context='talk', font='sans-serif', font_scale=1.0)
+    #     sns.set_theme('talk', font_scale=1.2)
     x = np.arange(len(labels))
     width = 0.2
-    fig, ax = plt.subplots(figsize=(15, 10))
+    fig, ax = plt.subplots()
     bar1 = ax.bar(x - width/1.5, PP_means, width,
-                  label='Experiment', alpha=0.5)
+                  label='Experiment')
     if use_baseline:
         bar2 = ax.bar(x + width/1.5, sim_means, width,
                       yerr=[std_ds_baseline, std_ds_food, std_ds_water], label='Simulation')
@@ -695,29 +746,37 @@ def PP_4A(V_foods, V_waters, empty_plot=False, use_baseline=False):
         bar2 = ax.bar(x + width/1.5, sim_means, width,
                       yerr=[std_ds_food, std_ds_water], label='Simulation')
     if not empty_plot:
-        ax.set_ylabel('Relative Dopamine', fontsize=50)
-        ax.set_title('Response to Cue at First Trial', fontsize=60)
+        ax.set_ylabel(
+            'Relative Dopamine',
+            # fontsize=50
+        )
+        ax.set_title(
+            'Response to Cue at First Trial',
+            # fontsize=60
+        )
         ax.set_xticks(x)
         ax.set_xticklabels(labels)
-        ax.tick_params(axis='x', which='major', labelsize=45)
-        ax.tick_params(axis='x', which='minor', labelsize=45)
-        ax.tick_params(axis='y', which='major', labelsize=45)
-        ax.tick_params(axis='y', which='minor', labelsize=45)
+        # ax.tick_params(axis='x', which='major', labelsize=45)
+        # ax.tick_params(axis='x', which='minor', labelsize=45)
+        # ax.tick_params(axis='y', which='major', labelsize=45)
+        # ax.tick_params(axis='y', which='minor', labelsize=45)
     else:
         plt.xticks([])
         plt.yticks([])
         plt.xlabel("")
         plt.ylabel("")
-    ax.legend(fontsize=50)
-    sns.despine(left=False, top=True, right=True, bottom=False)
-    fig.tight_layout()
-    plt.tight_layout()
+    # ax.legend(fontsize=50)
+    # sns.despine(left=False, top=True, right=True, bottom=False)
+    # fig.tight_layout()
+    # plt.tight_layout()
     if use_baseline:
         plt.savefig("figures/proper_PP_4A_4_empty.jpg", format="jpg")
     else:
         plt.savefig(
             "figures/proper_PP_4A_4_empty_no_baseline.jpg", format="jpg")
-    plt.show()
+        plt.savefig(
+            "figures/proper_PP_4A_4_empty_no_baseline.pdf", format="pdf")
+    # plt.show(block=False)
 
 
 def Vs_N_experiments(N_runs, N_steps=500, lr=0.1):
@@ -756,5 +815,5 @@ if __name__ == '__main__':
     #V_foods, V_waters = Vs_N_experiments(20)
     #PP_2D(V_foods, V_waters)
 
-    PP_4A(V_foods, V_waters, empty_plot=True, use_baseline=False)
-    cosyne_combined_megaplot(V_foods, V_waters, empty_plot=True)
+    PP_4A(V_foods, V_waters, empty_plot=False, use_baseline=False)
+    cosyne_combined_megaplot(V_foods, V_waters, empty_plot=False)
